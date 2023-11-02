@@ -28,9 +28,20 @@
         <nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
             <div class="container">
                 <div class="navbar-header">
+                    
                     <a class="navbar-brand" href="#">To Do List app</a>
-
+                    
                     <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
+                
+                {% if app.user %}
+                <a href="{{ path('user_list') }}" class="pull-right btn btn-primary">Liste utilisateur</a>
+                <a href="{{ path('logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
+                {% endif %}
+                
+                {% if not app.user and 'login' != app.request.attributes.get('_route') %}
+                <a href="{{ path('login') }}" class="btn btn-success">Se connecter</a>
+                {% endif %}
+
                 </div>
             </div>
         </nav>
@@ -38,15 +49,9 @@
         <!-- Page Content -->
         <div class="container">
             <div class="row">
-                <a href="" class="btn btn-primary">Créer un utilisateur</a>
-
-                {% if app.user %}
-                <a href="{{ path('logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
-                {% endif %}
-
-                {% if not app.user and 'login' != app.request.attributes.get('_route') %}
-                <a href="{{ path('login') }}" class="btn btn-success">Se connecter</a>
-                {% endif %}
+            {% if app.user %}
+               <a href="" class="btn btn-primary">Créer un utilisateur</a>
+            {% endif %}
             </div>
 
             <div class="row">
