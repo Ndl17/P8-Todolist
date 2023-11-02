@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\userCreationForm;
+use App\Form\userEditionForm;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,8 +18,8 @@ class UserController extends AbstractController
     #[Route('/users', name: 'user_list')]
     public function indexList(UserRepository $userRepository): Response
     {
-                //récupère toutes les user grâce à la méthode findAll()
-                $users = $userRepository->findAll();
+        //récupère toutes les user grâce à la méthode findAll()
+        $users = $userRepository->findAll();
 
         return $this->render('user/index.html.twig', [
             'users' => $users,
@@ -43,7 +44,6 @@ public function create(Request $request, UserPasswordHasherInterface $userPasswo
 
         $entityManager->persist($user);
         $entityManager->flush();
-        // do anything else you need here, like send an email
 
         return $this->redirectToRoute('user_list');
     }
@@ -52,4 +52,31 @@ public function create(Request $request, UserPasswordHasherInterface $userPasswo
         'userCreationForm' => $form->createView(),
     ]);
 }
+
+#[Route('/users/{id}/edit', name: 'user_edit')]
+public function edit(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher){
+ //on crée le formulaire grâce à la méthode createForm() du contrôleur et on lui passe en paramètre le type de formulaire et l'instance de l'utilisateur
+ $form = $this->createForm(userEditionForm::class, $user);
+
+ //on récupère les données du formulaire
+ $form->handleRequest($request);
+ //si le formulaire est soumis et valide
+ if ($form->isSubmitted() && $form->isValid()) {
+     //pour changer le mot de passe, on va créer le mot de passe de l'utilisateur et on va l'encoder
+     $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('password')->getData()));
+     //on persiste l'utilisateur et on le flush
+     $entityManager->persist($user);
+     $entityManager->flush();
+
+     $this->addFlash('success', 'Utilisateur mis à jour avec succès.');
+
+     return $this->redirectToRoute('user_list'); 
+ }
+
+ return $this->render('user/edit.html.twig', [
+     'userEditionForm' => $form->createView(),
+     'user' => $user, 
+ ]);
+}
+
 }
