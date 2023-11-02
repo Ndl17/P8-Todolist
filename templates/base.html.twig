@@ -50,7 +50,7 @@
         <div class="container">
             <div class="row">
             {% if app.user %}
-               <a href="" class="btn btn-primary">Créer un utilisateur</a>
+               <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
             {% endif %}
             </div>
 
