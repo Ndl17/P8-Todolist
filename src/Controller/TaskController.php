@@ -105,4 +105,14 @@ class TaskController extends AbstractController
 
     }
 
+    #[Route('/tasks/{id}/delete', name: 'task_delete')]
+    public function delete(Task $task, EntityManagerInterface $entityManager)
+    {
+        //on supprime la tâche
+        $entityManager->remove($task);
+        $entityManager->flush();
+        $this->addFlash('success', 'La tâche a bien été supprimée.');
+        return $this->redirectToRoute('task_list');
+    }
+
 }
