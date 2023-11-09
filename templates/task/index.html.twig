@@ -15,7 +15,7 @@
         <div class="col-xs-12 col-sm-6 col-md-4 mb-4">
             <div class="card card-task">
                 <div class="card-heading">
-                    <h5 class="card-title"><a href="">{{ task.title }}</a></h5>
+                    <h5 class="card-title"><a href="{{ path('task_edit', {'id' : task.id}) }}">{{ task.title }}</a></h5>
                     {% if task.user is not null %}
                     <h6 class="card-subtitle mb-2 text-muted">Auteur: {{task.user.username}}</h6>
                     {% else %}

@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskCreationFormType;
+use App\Form\TaskEditionFormType;
 use App\Repository\TaskRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -59,5 +61,32 @@ class TaskController extends AbstractController
 
         return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
+
+    #[Route('/tasks/{id}/edit', name: 'task_edit')]
+    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository)
+    {
+        //création du formulaire grâce à la méthode createForm() du contrôleur
+        $form = $this->createForm(TaskEditionFormType::class, $task);
+        //on récupère les données du formulaire
+        $form->handleRequest($request);
+        //si le formulaire est soumis et valide
+        if ($form->isSubmitted() && $form->isValid()) {   
+            //on persiste la tâche et on la flush
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+            return $this->redirectToRoute('task_list');
+        }else{
+            $this->addFlash('danger', 'La tâche n\'a pas été modifiée. Veuillez recommencer votre saisie.');
+        }
+
+        return $this->render('task/edit.html.twig', [
+            'form' => $form->createView(),
+            'task' => $task,
+        ]);
+    }
+
 
 }
