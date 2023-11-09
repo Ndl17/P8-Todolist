@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row">
+    <div class="col">   
+        <div class="content-full">
+            <div class="btn-back">
+                <a href="{{ path('task_list') }}" class="btn btn-primary btn-return">Retour à la liste des tâches</a>
+                </div>
+
+                {{ form_start(form, {
+                    'action': path('task_create'),
+                    'attr': {'novalidate': 'novalidate'}
+                    }) 
+                }}
+
+                {{ form_row(form.title, {
+                    'attr': {'class': 'form-control'},
+                    'label': 'Titre'
+                    }) 
+                }}
+                {{form_errors(form.title)}}
+
+
+                {{ form_row(form.content, {
+                    'attr': {'class': 'form-control'},
+                    'label': 'Contenu'
+                }) 
+                }}
+                {{form_errors(form.content)}}
+
+                    <button type="submit" class="btn btn-success btn-submit">Ajouter</button>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+    {% block style %}
+    <style>
+    .btn-submit{
+        margin-top: 20px;
+    }
+    .btn-return{
+        margin-bottom: 20px;
+    }
+    
+    
+
+    </style>
+    {% endblock %}
+
+{% endblock %}

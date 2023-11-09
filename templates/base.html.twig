@@ -34,7 +34,9 @@
                     <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
                 
                 {% if app.user %}
-                <a href="{{ path('user_list') }}" class="pull-right btn btn-primary">Liste utilisateur</a>
+                <a href="{{ path('homepage') }}" class="pull-right btn btn-secondary">Accueil</a>
+                <a href="{{ path('task_list') }}" class="pull-right btn btn-secondary">Liste des tâches</a>
+                <a href="{{ path('user_list') }}" class="pull-right btn btn-secondary">Liste utilisateur</a>
                 <a href="{{ path('logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
                 {% endif %}
                 
@@ -49,10 +51,13 @@
         <!-- Page Content -->
         <div class="container">
             <div class="row">
-            {% if app.user %}
-               <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
+              <div class="col-md-12">
+                         {% if app.user %}
+               <a href="{{ path('user_create') }}" class="btn btn-primary btn-create">Créer un utilisateur</a>
             {% endif %}
-            </div>
+
+             </div>
+             </div>
 
             <div class="row">
                 <div class="col-md-12">
@@ -102,3 +107,11 @@
 
     </body>
 </html>
+{% block style %}
+<style>
+    .btn-create{
+       margin-top: 20px;
+    }
+ 
+</style>
+{% endblock %}

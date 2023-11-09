@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\userCreationForm;
-use App\Form\userEditionForm;
+use App\Form\userCreationFormType;
+use App\Form\userEditionFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +30,7 @@ class UserController extends AbstractController
 public function create(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
 {
     $user = new User();
-    $form = $this->createForm(userCreationForm::class, $user);
+    $form = $this->createForm(userCreationFormType::class, $user);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -45,7 +45,11 @@ public function create(Request $request, UserPasswordHasherInterface $userPasswo
         $entityManager->persist($user);
         $entityManager->flush();
 
+        $this->addFlash('success','l\'utilisateur a été créé avec succès.');
+
         return $this->redirectToRoute('user_list');
+    }else{
+        $this->addFlash('danger', 'L\'utilisateur n\'a pas été créé. Veuillez recommencer votre saisie.');
     }
 
     return $this->render('user/create.html.twig', [
@@ -56,7 +60,7 @@ public function create(Request $request, UserPasswordHasherInterface $userPasswo
 #[Route('/users/{id}/edit', name: 'user_edit')]
 public function edit(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher){
  //on crée le formulaire grâce à la méthode createForm() du contrôleur et on lui passe en paramètre le type de formulaire et l'instance de l'utilisateur
- $form = $this->createForm(userEditionForm::class, $user);
+ $form = $this->createForm(userEditionFormType::class, $user);
 
  //on récupère les données du formulaire
  $form->handleRequest($request);
@@ -71,6 +75,8 @@ public function edit(User $user, Request $request, EntityManagerInterface $entit
      $this->addFlash('success', 'Utilisateur mis à jour avec succès.');
 
      return $this->redirectToRoute('user_list'); 
+ }else{
+     $this->addFlash('danger', 'L\'utilisateur n\'a pas été mis à jour. Veuillez recommencer votre saisie.');
  }
 
  return $this->render('user/edit.html.twig', [

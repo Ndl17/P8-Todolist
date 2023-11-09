@@ -12,9 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Email;
 
-class userEditionForm extends AbstractType
+class userCreationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -26,9 +25,6 @@ class userEditionForm extends AbstractType
               new NotBlank([
                 'message' => 'Renseignez un E-mail.',
               ]),
-              new Email([
-                'message' => 'L\'adresse e-mail "{{ value }}" n\'est pas valide.',
-            ]),
             ],
           ])
           ->add('username',TextType::class, [
