@@ -55,7 +55,7 @@ class TaskController extends AbstractController
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
             return $this->redirectToRoute('task_list');
-        }else{
+        } else {
             $this->addFlash('danger', 'La tâche n\'a pas été ajoutée. Veuillez recommencer votre saisie.');
         }
 
@@ -70,7 +70,7 @@ class TaskController extends AbstractController
         //on récupère les données du formulaire
         $form->handleRequest($request);
         //si le formulaire est soumis et valide
-        if ($form->isSubmitted() && $form->isValid()) {   
+        if ($form->isSubmitted() && $form->isValid()) {
             //on persiste la tâche et on la flush
             $entityManager->persist($task);
             $entityManager->flush();
@@ -78,7 +78,7 @@ class TaskController extends AbstractController
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
             return $this->redirectToRoute('task_list');
-        }else{
+        } else {
             $this->addFlash('danger', 'La tâche n\'a pas été modifiée. Veuillez recommencer votre saisie.');
         }
 
@@ -87,6 +87,22 @@ class TaskController extends AbstractController
             'task' => $task,
         ]);
     }
+    
+    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
+    public function toggleTask(Task $task, EntityManagerInterface $entityManager)
+    {
+        //on inverse la valeur de la propriété isDone
+        $task->setIsDone(!$task->isIsDone());
+        //on persiste la tâche et on la flush
+        $entityManager->persist($task);
+        $entityManager->flush();
+        if ($task->isIsDone()) {
+            $this->addFlash('success', 'La tâche a bien été marquée comme faite.', $task->getTitle());
+        } else {
+            $this->addFlash('success', 'La tâche a bien été marquée comme non faite.', $task->getTitle());
+        }
+        return $this->redirectToRoute('task_list');
 
+    }
 
 }
