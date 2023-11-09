@@ -1,14 +1,39 @@
 {% extends 'base.html.twig' %}
-
 {% block header_title %}<h1>Créer un utilisateur</h1>{% endblock %}
 {% block header_img %}{% endblock %}
-
 {% block body %}
-    <div class="row">
-        {{ form_start(userCreationForm, {'action' : path('user_create')}) }}
-            {{ form_widget(userCreationForm) }}
-
-            <button type="submit" class="btn btn-success pull-right">Ajouter</button>
-        {{ form_end(userCreationForm) }}
+<div class="container">
+    <h3>Créer un utilisateur</h3>
+    {{ form_start(userCreationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+    
+    <div class="form-group">
+        {{ form_label(userCreationForm.email) }}
+        {{ form_widget(userCreationForm.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(userCreationForm.email) }}
     </div>
+
+    <div class="form-group">
+        {{ form_label(userCreationForm.username) }}
+        {{ form_widget(userCreationForm.username, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(userCreationForm.username) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(userCreationForm.password.first) }}
+        {{ form_widget(userCreationForm.password.first, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(userCreationForm.password.first) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(userCreationForm.password.second) }}
+        {{ form_widget(userCreationForm.password.second, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(userCreationForm.password.second) }}
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    </div>
+
+    {{ form_end(userCreationForm) }}
+</div>
 {% endblock %}
