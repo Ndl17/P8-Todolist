@@ -53,7 +53,7 @@ public function create(Request $request, UserPasswordHasherInterface $userPasswo
     }
 
     return $this->render('user/create.html.twig', [
-        'userCreationForm' => $form->createView(),
+        'form' => $form->createView(),
     ]);
 }
 
@@ -80,7 +80,7 @@ public function edit(User $user, Request $request, EntityManagerInterface $entit
  }
 
  return $this->render('user/edit.html.twig', [
-     'userEditionForm' => $form->createView(),
+     'form' => $form->createView(),
      'user' => $user, 
  ]);
 }
