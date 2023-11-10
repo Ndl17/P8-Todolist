@@ -4,36 +4,44 @@
 {% block body %}
 <div class="container">
     <h3>Créer un utilisateur</h3>
-    {{ form_start(userCreationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     
     <div class="form-group">
-        {{ form_label(userCreationForm.email) }}
-        {{ form_widget(userCreationForm.email, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(userCreationForm.email) }}
+        {{ form_label(form.email) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.email) }}
     </div>
 
     <div class="form-group">
-        {{ form_label(userCreationForm.username) }}
-        {{ form_widget(userCreationForm.username, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(userCreationForm.username) }}
+        {{ form_label(form.username) }}
+        {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.username) }}
+    </div>
+
+    
+    <div class="form-group">
+        {{ form_label(form.roles) }}
+        {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.roles) }}
+    </div>
+
+
+    <div class="form-group">
+        {{ form_label(form.password.first) }}
+        {{ form_widget(form.password.first, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.password.first) }}
     </div>
 
     <div class="form-group">
-        {{ form_label(userCreationForm.password.first) }}
-        {{ form_widget(userCreationForm.password.first, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(userCreationForm.password.first) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(userCreationForm.password.second) }}
-        {{ form_widget(userCreationForm.password.second, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(userCreationForm.password.second) }}
+        {{ form_label(form.password.second) }}
+        {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.password.second) }}
     </div>
 
     <div class="form-group">
         <button type="submit" class="btn btn-success">Enregistrer</button>
     </div>
 
-    {{ form_end(userCreationForm) }}
+    {{ form_end(form) }}
 </div>
 {% endblock %}
