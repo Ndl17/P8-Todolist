@@ -63,14 +63,18 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository)
+    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager)
     {
         //création du formulaire grâce à la méthode createForm() du contrôleur
         $form = $this->createForm(TaskEditionFormType::class, $task);
+        //on récupère l'auteur initial de la tâche
+        $initialAuthor = $task->getUser();
         //on récupère les données du formulaire
         $form->handleRequest($request);
         //si le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
+            //on rattache l'auteur initial à la tâche qu'on est en train de modifier
+            $task->setUser($initialAuthor);
             //on persiste la tâche et on la flush
             $entityManager->persist($task);
             $entityManager->flush();

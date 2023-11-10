@@ -29,6 +29,15 @@
                 }}
                 {{form_errors(form.content)}}
 
+                {{ form_row(form.user, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Anonyme',
+                    },
+                    'label': 'Auteur',
+                    'disabled': true,
+                }) }}
+
                     <button type="submit" class="btn btn-success btn-submit">Modifier</button>
 
                 {{ form_end(form) }}
