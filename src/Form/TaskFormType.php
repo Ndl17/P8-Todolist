@@ -17,31 +17,31 @@ class TaskFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title',TextType::class, [
-                'attr' => ['class'=>'form-control'],
+            ->add('title', TextType::class, [
+                'attr' => ['class' => 'form-control'],
                 'label' => 'Titre',
                 'constraints' => [
-                  new NotBlank([
-                    'message' => 'Renseignez un titre.',
-                  ]),
+                    new NotBlank([
+                        'message' => 'Renseignez un titre.',
+                    ]),
                 ],
-              ])
-            ->add('content',TextareaType::class, [
-                'attr' => ['class'=>'form-control'],
+            ])
+            ->add('content', TextareaType::class, [
+                'attr' => ['class' => 'form-control'],
                 'label' => 'Contenu',
                 'constraints' => [
-                  new NotBlank([
-                    'message' => 'Renseignez un contenu.',
-                  ]),
+                    new NotBlank([
+                        'message' => 'Renseignez un contenu.',
+                    ]),
                 ],
-              ])
-              ->add('user', EntityType::class, [  // champ autheur de la tache en disabled car on ne veut pas le modifier
+            ])
+            ->add('user', EntityType::class, [ // champ autheur de la tache en disabled car on ne veut pas le modifier
                 'class' => User::class,
                 'choice_label' => 'username',
                 'disabled' => true,
                 'placeholder' => 'Anonyme',
             ]);
-        ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

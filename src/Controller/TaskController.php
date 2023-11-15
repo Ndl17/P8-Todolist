@@ -89,7 +89,7 @@ class TaskController extends AbstractController
             'task' => $task,
         ]);
     }
-    
+
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTask(Task $task, EntityManagerInterface $entityManager)
     {
