@@ -6,36 +6,34 @@
         <div class="content-full">
             <div class="btn-back">
                 <a href="{{ path('task_list') }}" class="btn btn-primary btn-return">Retour à la liste des tâches</a>
-                </div>
-
-                {{ form_start(form, {
-                    'action': path('task_create'),
-                    'attr': {'novalidate': 'novalidate'}
-                    }) 
-                }}
-
-                {{ form_row(form.title, {
-                    'attr': {'class': 'form-control'},
-                    'label': 'Titre'
-                    }) 
-                }}
-                {{form_errors(form.title)}}
-
-
-                {{ form_row(form.content, {
-                    'attr': {'class': 'form-control'},
-                    'label': 'Contenu'
-                }) 
-                }}
-                {{form_errors(form.content)}}
-
-                    <button type="submit" class="btn btn-success btn-submit">Ajouter</button>
-
-                {{ form_end(form) }}
             </div>
+
+            {{ form_start(form, {
+                'action': path('task_create'),
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+
+            <div class="form-group">
+            <label for="titre">Titre</label>
+                {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                {{ form_help(form.title) }}
+                {{ form_errors(form.title) }}
+            </div>
+
+            <div class="form-group">
+            <label for="contenu">Contenu</label>
+                {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+                {{ form_help(form.content) }}
+                {{ form_errors(form.content) }}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-submit">Ajouter</button>
+
+            {{ form_end(form, {'render_rest': false}) }}            
         </div>
     </div>
 </div>
+
     {% block style %}
     <style>
     .btn-submit{

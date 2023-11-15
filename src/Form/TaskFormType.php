@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class TaskEditionFormType extends AbstractType
+class TaskFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
