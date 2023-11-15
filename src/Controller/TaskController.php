@@ -3,10 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Task;
-use App\Form\TaskCreationFormType;
-use App\Form\TaskEditionFormType;
+use App\Form\TaskFormType;
 use App\Repository\TaskRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -39,7 +37,7 @@ class TaskController extends AbstractController
         //on set la date de création de la tâche
         $task->setCreatedAt($createdAt);
         // on crée le formulaire grâce à la méthode createForm() du contrôleur
-        $form = $this->createForm(TaskCreationFormType::class, $task);
+        $form = $this->createForm(TaskFormType::class, $task);
         //on récupère les données du formulaire
         $form->handleRequest($request);
         //Si le formulaire est soumis et valide
@@ -66,7 +64,7 @@ class TaskController extends AbstractController
     public function edit(Task $task, Request $request, EntityManagerInterface $entityManager)
     {
         //création du formulaire grâce à la méthode createForm() du contrôleur
-        $form = $this->createForm(TaskEditionFormType::class, $task);
+        $form = $this->createForm(TaskFormType::class, $task);
         //on récupère l'auteur initial de la tâche
         $initialAuthor = $task->getUser();
         //on récupère les données du formulaire
@@ -91,7 +89,7 @@ class TaskController extends AbstractController
             'task' => $task,
         ]);
     }
-    
+
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTask(Task $task, EntityManagerInterface $entityManager)
     {

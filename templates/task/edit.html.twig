@@ -6,42 +6,38 @@
         <div class="content-full">
             <div class="btn-back">
                 <a href="{{ path('task_list') }}" class="btn btn-primary btn-return">Retour à la liste des tâches</a>
-                </div>
-
-                {{ form_start(form, {
-                    'action': path('task_edit', { 'id' : task.id }),
-                    'attr': {'novalidate': 'novalidate'}
-                    }) 
-                }}
-
-                {{ form_row(form.title, {
-                    'attr': {'class': 'form-control'},
-                    'label': 'Titre'
-                    }) 
-                }}
-                {{form_errors(form.title)}}
-
-
-                {{ form_row(form.content, {
-                    'attr': {'class': 'form-control'},
-                    'label': 'Contenu'
-                }) 
-                }}
-                {{form_errors(form.content)}}
-
-                {{ form_row(form.user, {
-                    'attr': {
-                        'class': 'form-control',
-                        'placeholder': 'Anonyme',
-                    },
-                    'label': 'Auteur',
-                    'disabled': true,
-                }) }}
-
-                    <button type="submit" class="btn btn-success btn-submit">Modifier</button>
-
-                {{ form_end(form) }}
             </div>
+
+            {{ form_start(form, {
+                'action': path('task_create'),
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+
+            <div class="form-group">
+            <label for="titre">Titre</label>
+                {{ form_widget(form.title) }}
+                {{ form_help(form.title) }}
+                {{ form_errors(form.title) }}
+            </div>
+
+            <div class="form-group">
+            <label for="contenu">Contenu</label>
+                {{ form_widget(form.content) }}
+                {{ form_help(form.content) }}
+                {{ form_errors(form.content) }}
+            </div>
+
+            <div class="form-group">
+            <label for="auteur">Auteur</label>
+                {{ form_widget(form.user) }}
+                {{ form_help(form.user) }}
+                {{ form_errors(form.user) }}
+            </div>
+
+
+            <button type="submit" class="btn btn-success btn-submit">Ajouter</button>
+
+            {{ form_end(form) }}            
         </div>
     </div>
 </div>

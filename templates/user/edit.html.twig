@@ -9,37 +9,39 @@
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     
     <div class="form-group">
-        {{ form_label(form.email) }}
+    <label for="email">E-mail</label>
         {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.email) }}
     </div>
 
     <div class="form-group">
-        {{ form_label(form.username) }}
+    <label for="username">Nom d'utilisateur</label>
         {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.username) }}
     </div>
 
+    
     <div class="form-group">
-        {{ form_label(form.roles) }}
+    <label for="roles">Rôle</label>
         {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.roles) }}
     </div>
 
+
     <div class="form-group">
-        {{ form_label(form.password.first) }}
+    <label for="mdp1">Mot de passe</label>
         {{ form_widget(form.password.first, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.password.first) }}
     </div>
 
     <div class="form-group">
-        {{ form_label(form.password.second) }}
+    <label for="mdp1bis">Tapez le mot de passe à nouveau</label>
         {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.password.second) }}
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-success">Mettre à jour</button>
+        <button type="submit" class="btn btn-success">Enregistrer</button>
     </div>
 
     {{ form_end(form) }}
