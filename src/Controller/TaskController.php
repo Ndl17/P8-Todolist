@@ -32,19 +32,17 @@ class TaskController extends AbstractController
         $task = new Task();
         //on attribue l'utilisateur connecté à la tâche
         $task->setUser($currentUser);
-        //on récupère la date de création de la tâche
-        $createdAt = new \DateTimeImmutable();
-        //on set la date de création de la tâche
-        $task->setCreatedAt($createdAt);
         // on crée le formulaire grâce à la méthode createForm() du contrôleur
         $form = $this->createForm(TaskFormType::class, $task);
         //on récupère les données du formulaire
         $form->handleRequest($request);
         //Si le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
-            //on set la date de création de la tâche, l'utilisateur connecté et on set la tâche à non terminée
-            // $task->setCreatedAt(new \DateTime());
-            $task->setUser($this->getUser());
+            //on récupère la date de création de la tâche
+            $createdAt = new \DateTimeImmutable();
+            //on set la date de création de la tâche
+            $task->setCreatedAt($createdAt);
+            //on set la propriété isDone à false
             $task->setIsDone(false);
             //on persiste la tâche et on la flush
             $entityManager->persist($task);
@@ -61,27 +59,41 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager)
+    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, Security $security)
     {
+        //on récupère l'utilisateur connecté
+        $user = $security->getUser();
+        //si l'utilisateur n'est pas connecté
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté pour modifier une tâche.');
+            return $this->redirectToRoute('task_list');
+        }
         //création du formulaire grâce à la méthode createForm() du contrôleur
         $form = $this->createForm(TaskFormType::class, $task);
         //on récupère l'auteur initial de la tâche
         $initialAuthor = $task->getUser();
         //on récupère les données du formulaire
         $form->handleRequest($request);
-        //si le formulaire est soumis et valide
-        if ($form->isSubmitted() && $form->isValid()) {
-            //on rattache l'auteur initial à la tâche qu'on est en train de modifier
-            $task->setUser($initialAuthor);
-            //on persiste la tâche et on la flush
-            $entityManager->persist($task);
-            $entityManager->flush();
+        //si l'utilisateur connecté est admin ou si l'utilisateur connecté est l'auteur de la tâche
+        if (in_array('ROLE_ADMIN', $user->getRoles()) || $user == $task->getUser()) {
+            //si le formulaire est soumis et valide
+            if ($form->isSubmitted() && $form->isValid()) {
+                //on rattache l'auteur initial à la tâche qu'on est en train de modifier
+                $task->setUser($initialAuthor);
+                //on persiste la tâche et on la flush
+                $entityManager->persist($task);
+                $entityManager->flush();
 
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
+                $this->addFlash('success', 'La tâche a bien été modifiée.');
 
-            return $this->redirectToRoute('task_list');
+                return $this->redirectToRoute('task_list');
+
+            } else {
+                $this->addFlash('danger', 'La tâche n\'a pas été modifiée. Veuillez recommencer votre saisie.');
+            }
         } else {
-            $this->addFlash('danger', 'La tâche n\'a pas été modifiée. Veuillez recommencer votre saisie.');
+            $this->addFlash('danger', 'Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la modifier');
+            return $this->redirectToRoute('task_list');
         }
 
         return $this->render('task/edit.html.twig', [
@@ -91,30 +103,61 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTask(Task $task, EntityManagerInterface $entityManager)
+    public function toggleTask(Task $task, EntityManagerInterface $entityManager, Security $security)
     {
-        //on inverse la valeur de la propriété isDone
-        $task->setIsDone(!$task->isIsDone());
-        //on persiste la tâche et on la flush
-        $entityManager->persist($task);
-        $entityManager->flush();
-        if ($task->isIsDone()) {
-            $this->addFlash('success', 'La tâche a bien été marquée comme faite.');
-        } else {
-            $this->addFlash('success', 'La tâche a bien été marquée comme non faite.');
-        }
-        return $this->redirectToRoute('task_list');
+        //on récupère l'utilisateur connecté
+        $user = $security->getUser();
 
+        //si l'utilisateur n'est pas connecté
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté pour modifier une tâche.');
+            return $this->redirectToRoute('task_list');
+        }
+
+        //si l'utilisateur connecté est admin ou si l'utilisateur connecté est l'auteur de la tâche
+        if (in_array('ROLE_ADMIN', $user->getRoles()) || $user == $task->getUser()) {
+            //on inverse la valeur de la propriété isDone
+            $task->setIsDone(!$task->isIsDone());
+            
+            //on persiste la tâche et on la flush
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            if ($task->isIsDone()) {
+                $this->addFlash('success', 'La tâche a bien été marquée comme faite.');
+            } else {
+                $this->addFlash('success', 'La tâche a bien été marquée comme non faite.');
+            }
+
+            return $this->redirectToRoute('task_list');
+
+        } else {
+            $this->addFlash('danger', 'Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la modifier');
+            return $this->redirectToRoute('task_list');
+        }
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function delete(Task $task, EntityManagerInterface $entityManager)
+    public function delete(Task $task, EntityManagerInterface $entityManager, Security $security)
     {
-        //on supprime la tâche
-        $entityManager->remove($task);
-        $entityManager->flush();
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
-        return $this->redirectToRoute('task_list');
+        //on récupère l'utilisateur connecté
+        $user = $security->getUser();
+        //si l'utilisateur n'est pas connecté
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté pour supprimer une tâche.');
+            return $this->redirectToRoute('task_list');
+        }
+        //si l'utilisateur connecté est admin ou si l'utilisateur connecté est l'auteur de la tâche
+        if (in_array('ROLE_ADMIN', $user->getRoles()) || $user == $task->getUser()) {
+            //on supprime la tâche
+            $entityManager->remove($task);
+            $entityManager->flush();
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+            return $this->redirectToRoute('task_list');
+        } else {
+            $this->addFlash('danger', 'Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la supprimer');
+            return $this->redirectToRoute('task_list');
+        }
     }
 
 }
