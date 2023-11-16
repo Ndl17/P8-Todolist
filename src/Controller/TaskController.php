@@ -17,8 +17,8 @@ class TaskController extends AbstractController
     #[Route('/task', name: 'task_list')]
     public function index(TaskRepository $taskRepository): Response
     {
-        //récupère toutes les tâches grâce à la méthode findAll()
-        $tasks = $taskRepository->findAll();
+        //récupère toutes les tâches grâce à la méthode  findby() avec un tri par ordre décroissant
+        $tasks = $taskRepository->findBy([], ['id' => 'DESC'] );
         //retourne la vue list.html.twig en lui passant en paramètre le tableau de tâches
         return $this->render('task/index.html.twig', ['tasks' => $tasks]);
     }
