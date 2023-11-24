@@ -9,7 +9,7 @@
             </div>
 
             {{ form_start(form, {
-                'action': path('task_create'),
+                'action': path('task_edit', {'id': task.id}),
                 'attr': {'novalidate': 'novalidate'}
             }) }}
 

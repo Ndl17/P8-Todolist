@@ -48,6 +48,7 @@ class TaskFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Task::class,
+            'block_name' => 'task_form',
         ]);
     }
 }
