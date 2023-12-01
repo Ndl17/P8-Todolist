@@ -53,6 +53,15 @@ class TaskFixtures extends Fixture implements OrderedFixtureInterface
         $manager->persist($taskToUserTest);
         $manager->flush();
 
+        $taskToUserTest = new Task();
+        $taskToUserTest->setCreatedAt(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $faker->date('Y-m-d H:i:s')));
+        $taskToUserTest->setTitle('Tâche de test 2');
+        $taskToUserTest->setContent('Contenu de la tâche de test');
+        $taskToUserTest->setIsDone(0);
+        $taskToUserTest->setUser($this->getReference('user_test'));
+        $manager->persist($taskToUserTest);
+        $manager->flush();
+
         $taskToUserTestBis = new Task();
         $taskToUserTestBis->setCreatedAt(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $faker->date('Y-m-d H:i:s')));
         $taskToUserTestBis->setTitle('Tâche de test bis');

@@ -44,7 +44,9 @@ class SecurityControllerTest extends WebTestCase
             ]);
         $client->submit($form);
         $this->assertResponseRedirects('/');
+        $this->assertResponseStatusCodeSame(302);
         $client->followRedirect();
+
     }
 
     public function testLogout()
