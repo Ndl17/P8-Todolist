@@ -263,6 +263,7 @@ class UserControllerTest extends WebTestCase
         //on recupère l'utilisateur que l'on veut modifier
         $user = $this->getUserByEmail($client, $emailGetUser);
 
+        //on verifie que l'utilisateur n'existe pas suite à un test précédent
         $existingUser = $this->getUserByEmail($client, $emailGetUserEdit);
         if ($existingUser) {
             $this->deleteUserByEmail($client, $emailGetUserEdit);
@@ -280,17 +281,17 @@ class UserControllerTest extends WebTestCase
             'user_form[password][first]' => 'plaintextpasswordEdit', 
             'user_form[password][second]' => 'plaintextpasswordEdit',
         ]);
+
         //on soumet le formulaire
         $client->submit($form);
 
-
+        //on verifie que l'utilisateur a bien été modifié et que les données sont bien celles que l'on a rentré
         $userAfterEdit = $this->getUserByEmail($client, $emailGetUserEdit);
         $this->assertNotEquals('testControllerUserTest', $userAfterEdit->getUsername());
         $this->assertNotEquals('testFromUserControllerTest@example.com', $userAfterEdit->getEmail());
         $this->assertNotEquals('plaintextpasswordEdit', $userAfterEdit->getPassword());
         $this->assertNotEquals('ROLE_USER', $userAfterEdit->getRoles());
 
-    
         //on verfie que le mot de passe est bien hashé
         $this->assertNotEquals('plaintextpasswordEdit', $userAfterEdit->getPassword());
         // on verifie la correspondance du mot de passe avec le hasher
@@ -308,5 +309,37 @@ class UserControllerTest extends WebTestCase
 
 
     }
+
+public function testUserEditFailedWhenRoleAdmin()
+{
+    // on crée un client qui va nous permettre de faire des requêtes HTTP
+    $client = static::createClient();
+    $email = 'admin@todolist.com';
+    $emailGetUser = 'testFromUserControllerTest@example.comEdit';
+
+    //on s'autentifie avec le role admin
+    $this->createAuthenticatedClient($client, $email);
+    //on recupère l'utilisateur que l'on veut modifier
+    $user = $this->getUserByEmail($client, $emailGetUser);
+
+    // on fait une requête HTTP sur l'URL "/users/{id}/edit"
+    $crawler = $client->request('GET', '/users/' . $user->getId() . '/edit');
+
+    //on rempli le formulaire avec les données à vide
+    $form = $crawler->selectButton('Enregistrer')->form([
+        'user_form[email]' => '',
+        'user_form[username]' => '',
+        'user_form[roles]' => 'ROLE_ADMIN',
+        'user_form[password][first]' => '',
+        'user_form[password][second]' => '',
+    ]);
+
+    //on soumet le formulaire
+    $client->submit($form);
+
+    //on test que la requete renvoie un code 500
+    $this->assertResponseStatusCodeSame(Response::HTTP_INTERNAL_SERVER_ERROR);
+
+}
 
 }

@@ -3,6 +3,7 @@
 {% block header_img %}{% endblock %}
 {% block body %}
 <div class="container">
+    <h3>Créer un utilisateur</h3>
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     
     <div class="form-group">
@@ -29,12 +30,14 @@
     <label for="mdp1">Mot de passe</label>
         {{ form_widget(form.password.first, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.password.first) }}
+        {{form_help(form.password.first)}}
     </div>
 
     <div class="form-group">
     <label for="mdp1bis">Tapez le mot de passe à nouveau</label>
         {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.password.second) }}
+        {{form_help(form.password.second)}}
     </div>
 
     <div class="form-group">
