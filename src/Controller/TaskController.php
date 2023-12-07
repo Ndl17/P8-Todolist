@@ -8,6 +8,7 @@ use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/create', name: 'task_create')]
-    public function create(EntityManagerInterface $entityManager, Request $request, Security $security)
+    public function create(EntityManagerInterface $entityManager, Request $request, Security $security): Response
     {
         //avec security on récupère l'utilisateur connecté
         $currentUser = $security->getUser();
@@ -59,7 +60,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, Security $security)
+    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, Security $security):Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
@@ -103,7 +104,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTask(Task $task, EntityManagerInterface $entityManager, Security $security)
+    public function toggleTask(Task $task, EntityManagerInterface $entityManager, Security $security):Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
@@ -138,7 +139,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function delete(Task $task, EntityManagerInterface $entityManager, Security $security)
+    public function delete(Task $task, EntityManagerInterface $entityManager, Security $security):Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
