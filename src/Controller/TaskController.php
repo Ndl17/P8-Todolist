@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route('/task', name: 'task_list')]
+    #[Route('/tasks', name: 'task_list')]
     public function index(TaskRepository $taskRepository): Response
     {
         //récupère toutes les tâches grâce à la méthode  findby() avec un tri par ordre décroissant
@@ -24,7 +24,7 @@ class TaskController extends AbstractController
         return $this->render('task/index.html.twig', ['tasks' => $tasks]);
     }
 
-    #[Route('/task/create', name: 'task_create')]
+    #[Route('/tasks/create', name: 'task_create')]
     public function create(EntityManagerInterface $entityManager, Request $request, Security $security): Response
     {
         //avec security on récupère l'utilisateur connecté
