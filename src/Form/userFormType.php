@@ -63,7 +63,7 @@ class userFormType extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Veuillez saisir un mot de passe',
                     ]),
                     new Length([
                         'min' => 6,
@@ -103,6 +103,8 @@ class userFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'block_name' => 'userFormType',
+
         ]);
     }
 }

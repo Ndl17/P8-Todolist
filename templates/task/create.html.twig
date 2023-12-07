@@ -10,9 +10,8 @@
 
             {{ form_start(form, {
                 'action': path('task_create'),
-                'attr': {'novalidate': 'novalidate'}
             }) }}
-
+            {{ form_row(form._token) }}
             <div class="form-group">
             <label for="titre">Titre</label>
                 {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
