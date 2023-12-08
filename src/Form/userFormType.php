@@ -103,7 +103,7 @@ class UserFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'block_name' => 'userFormType',
+            'block_name' => 'UserFormType',
 
         ]);
     }

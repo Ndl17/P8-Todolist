@@ -37,7 +37,7 @@ task_edit:
 task_toggle:
     path: /tasks/{id}/toggle
     methods: [GET]
-    controller: App\Controller\TaskController::toggle
+    controller: App\Controller\TaskController::toggleTask
 
 task_delete:
     path: /tasks/{id}/delete
