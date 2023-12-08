@@ -11,7 +11,9 @@ class UserControllerTest extends WebTestCase
 
     use TestClientUtilitiesTrait;
 /***************** TEST FONCTION INDEXLIST() *******************/
-
+    /**
+     * Test de l'impossibilité d'accéder à la page de liste des users si on est pas connecté.
+     */
     public function testUserIndexDisplayFailedNotAuth()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -22,6 +24,10 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
 
     }
+
+    /**
+     * Test de l'impossibilité d'accéder à la page de liste des users si on est connecté avec le role user.
+     */
     public function testUserIndexDisplayFailedWhenRoleUser()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -37,6 +43,9 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de l'accès à la page de liste des users si on est connecté avec le role admin.
+     */
     public function testUserIndexDisplaySuccessWhenRoleAdmin()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -51,6 +60,10 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de l'affichage de la page de liste des users en tant qu'admin.
+     * On vérifie qu'on a bien le bon titre de la page et qu'on a au moins 15 users affichés.
+     */
     public function testUserIndexHasUsers(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -73,6 +86,9 @@ class UserControllerTest extends WebTestCase
 
 /***************** TEST FONCTION CREATE() *******************/
 
+    /**
+     * Test de l'impossibilité d'accéder à la page de création d'un user si on est pas connecté.
+     */
     public function testUserCreateDisplayFailedNotAuth()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -84,6 +100,9 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de l'impossibilité d'accéder à la page de création d'un user si on est connecté avec le role user.
+     */
     public function testUserCreateDisplayFailedWhenRoleUser()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -98,6 +117,10 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de l'accès à la page de création d'un user si on est connecté avec le role admin.
+     * On vérifie qu'on a bien le bon titre de la page et qu'on a le bouton enregistrer.
+     */
     public function testUserCreateDisplaySuccessWhenRoleAdmin()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -115,6 +138,12 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de la création d'un user avec des données valides en tant qu'admin.
+     * On verifie que le user a bien été créé avec les bonnes données.
+     * On verifie que le mot de passe est bien hashé.
+     * On vérifie qu'on est redirigé vers la page de liste des users et qu'on a le message de succès.
+     */
     public function testUserCreationSuccessWhenRoleAdmin(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -176,6 +205,9 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de la création d'un user avec des données invalides en tant qu'admin.
+     */
     public function testUserCreationAdminFailed()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -204,6 +236,9 @@ class UserControllerTest extends WebTestCase
     }
 /***************** TEST FONCTION EDIT() *******************/
 
+    /**
+     * Test de l'impossibilité d'accéder à la page d'édition d'un user si on est pas connecté.
+     */
     public function testUserEditDisplayFailedNotAuth()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -217,6 +252,9 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
+    /**
+     * Test de l'impossibilité d'accéder à la page d'édition d'un user si on est connecté avec le role user.
+     */
     public function testUserEditDisplayFailedWhenRoleUser()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -233,6 +271,10 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de l'accès à la page d'édition d'un user si on est connecté avec le role admin.
+     * On vérifie qu'on a bien le bon titre de la page et qu'on a le bouton enregistrer.
+     */
     public function testUserEditDisplaySuccessWhenRoleAdmin()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -251,6 +293,13 @@ class UserControllerTest extends WebTestCase
         $this->assertSelectorTextContains('button', 'Enregistrer');
         $this->assertSelectorTextContains('h1', 'Modifier ' . $user->getUsername());
     }
+
+    /**
+     * Test de la modification d'un user avec des données valides en tant qu'admin.
+     * On verifie que le user a bien été modifié avec les bonnes données et que celle-ci on bien changé.
+     * On verifie que le mot de passe est bien hashé.
+     * On vérifie qu'on est redirigé vers la page de liste des users et qu'on a le message de succès.
+     */
     public function testUserEditSuccessWhenRoleAdmin()
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -277,8 +326,8 @@ class UserControllerTest extends WebTestCase
         $form = $crawler->selectButton('Enregistrer')->form([
             'user_form[email]' => 'testFromUserControllerTest@example.comEdit',
             'user_form[username]' => 'testControllerUserTestEdit',
-            'user_form[roles]' => 'ROLE_ADMIN', 
-            'user_form[password][first]' => 'plaintextpasswordEdit', 
+            'user_form[roles]' => 'ROLE_ADMIN',
+            'user_form[password][first]' => 'plaintextpasswordEdit',
             'user_form[password][second]' => 'plaintextpasswordEdit',
         ]);
 
@@ -307,39 +356,41 @@ class UserControllerTest extends WebTestCase
         //on test que le message de succès est bien affiché
         $this->assertSelectorTextContains('.alert.alert-success', 'Superbe ! Utilisateur mis à jour avec succès.');
 
-
     }
 
-public function testUserEditFailedWhenRoleAdmin()
-{
-    // on crée un client qui va nous permettre de faire des requêtes HTTP
-    $client = static::createClient();
-    $email = 'admin@todolist.com';
-    $emailGetUser = 'testFromUserControllerTest@example.comEdit';
+    /**
+     * Test de la modification d'un user avec des données invalides en tant qu'admin.
+     */
+    public function testUserEditFailedWhenRoleAdmin()
+    {
+        // on crée un client qui va nous permettre de faire des requêtes HTTP
+        $client = static::createClient();
+        $email = 'admin@todolist.com';
+        $emailGetUser = 'testFromUserControllerTest@example.comEdit';
 
-    //on s'autentifie avec le role admin
-    $this->createAuthenticatedClient($client, $email);
-    //on recupère l'utilisateur que l'on veut modifier
-    $user = $this->getUserByEmail($client, $emailGetUser);
+        //on s'autentifie avec le role admin
+        $this->createAuthenticatedClient($client, $email);
+        //on recupère l'utilisateur que l'on veut modifier
+        $user = $this->getUserByEmail($client, $emailGetUser);
 
-    // on fait une requête HTTP sur l'URL "/users/{id}/edit"
-    $crawler = $client->request('GET', '/users/' . $user->getId() . '/edit');
+        // on fait une requête HTTP sur l'URL "/users/{id}/edit"
+        $crawler = $client->request('GET', '/users/' . $user->getId() . '/edit');
 
-    //on rempli le formulaire avec les données à vide
-    $form = $crawler->selectButton('Enregistrer')->form([
-        'user_form[email]' => '',
-        'user_form[username]' => '',
-        'user_form[roles]' => 'ROLE_ADMIN',
-        'user_form[password][first]' => '',
-        'user_form[password][second]' => '',
-    ]);
+        //on rempli le formulaire avec les données à vide
+        $form = $crawler->selectButton('Enregistrer')->form([
+            'user_form[email]' => '',
+            'user_form[username]' => '',
+            'user_form[roles]' => 'ROLE_ADMIN',
+            'user_form[password][first]' => '',
+            'user_form[password][second]' => '',
+        ]);
 
-    //on soumet le formulaire
-    $client->submit($form);
+        //on soumet le formulaire
+        $client->submit($form);
 
-    //on test que la requete renvoie un code 500
-    $this->assertResponseStatusCodeSame(Response::HTTP_INTERNAL_SERVER_ERROR);
+        //on test que la requete renvoie un code 500
+        $this->assertResponseStatusCodeSame(Response::HTTP_INTERNAL_SERVER_ERROR);
 
-}
+    }
 
 }

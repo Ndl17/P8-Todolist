@@ -12,6 +12,9 @@ class TaskControllerTest extends WebTestCase
     use TestClientUtilitiesTrait;
 
 /***************** TEST FONCTION INDEX() *******************/
+    /**
+     * Test de l'affichage de la page qui liste les tâches.
+     */
     public function testIndexTaskDisplayPage(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -23,6 +26,9 @@ class TaskControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de l'affichage de la page et que la page contient bien des tâches.
+     */
     public function testIndexHasTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -35,7 +41,9 @@ class TaskControllerTest extends WebTestCase
     }
 
 /***************** TEST FONCTION CREATE() *******************/
-
+    /**
+     * Test de l'affichage de la page qui permet de créer une tâche.
+     */
     public function testCreateTaskDisplayPage(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -47,6 +55,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('button', 'Ajouter');
     }
 
+    /**
+     * Test de la création d'une tâche valide.
+     */
     public function testCreateValidTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -69,6 +80,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-success', 'La tâche a été bien été ajoutée.');
     }
 
+    /**
+     * Test de la création d'une tâche invalide.
+     */
     public function testCreateInvalidTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -90,6 +104,11 @@ class TaskControllerTest extends WebTestCase
     }
 
 /***************** TEST FONCTION EDIT() *******************/
+    /**
+     * Test de l'affichage de la page qui permet d'éditer une tâche en étant connecté et l'auteur de la tâche.
+     * On cherche aussi à retrouver le titre de la tâche dans les éléments h5 pour accéder à la modification.
+     * On test aussi que le formulaire contient bien le bouton modifier.
+     */
     public function testEditTaskDisplayPage(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -126,6 +145,9 @@ class TaskControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test du non affichage de la page qui permet d'éditer une tâche en étant pas connecté.
+     */
     public function testEditTaskFailDisplayNotConnected(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -143,6 +165,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous devez être connecté pour modifier une tâche.');
     }
 
+    /**
+     * Test du non affichage de la page qui permet d'éditer une tâche en étant connecté mais pas l'auteur de la tâche.
+     */
     public function testEditTaskFailDisplayNotOwner(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -163,6 +188,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la modifier');
     }
 
+    /**
+     * Test de l'édition d'une tâche valide.
+     */
     public function testEditTaskValid(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -192,6 +220,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-success', 'Superbe ! La tâche a bien été modifiée.');
     }
 
+    /**
+     * Test de l'édition d'une tâche invalide.
+     */
     public function testEditTaskInvalid(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -219,6 +250,9 @@ class TaskControllerTest extends WebTestCase
 
 /***************** TEST FONCTION TOGGLE() *******************/
 
+    /**
+     * Test de l'impossibilité de basculer le statut d'une tâche en étant pas connecté.
+     */
     public function testToggleTaskFailDisplayNotConnected(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -235,6 +269,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous devez être connecté pour modifier une tâche.');
     }
 
+    /**
+     * Test de l'impossibilité de basculer le statut d'une tâche en étant connecté mais pas l'auteur de la tâche.
+     */
     public function testToggleTaskFailDisplayNotOwner(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -256,6 +293,10 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la modifier');
     }
 
+    /**
+     * Test de la possibilité de basculer le statut d'une tâche en étant connecté et l'auteur de la tâche.
+     * On test le changement de statut de la tâche et le message de succès.
+     */
     public function testToggleTaskValid(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -281,7 +322,7 @@ class TaskControllerTest extends WebTestCase
         //on verifie que le statut de la tache a bien changé
         $this->assertNotEquals($initialIsDone, $afterIsDone, 'Le statut de la tâche soit changer.');
 
-        //on vérifie que le message de succès est bien affiché  
+        //on vérifie que le message de succès est bien affiché
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         //en fonction du statut de la tâche on vérifie que le message de succès  correspondant est bien affiché
@@ -292,6 +333,11 @@ class TaskControllerTest extends WebTestCase
         }
     }
 
+    /**
+     * Test que la valeur du statut de la tâche est bien true ou false en fonction du statut initial.
+     * En étant connecté et l'auteur de la tâche.
+     * On test le changement de statut de la tâche et le message de succès.
+     */
     public function testToggleTaskValidValue(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -320,6 +366,9 @@ class TaskControllerTest extends WebTestCase
         }
     }
 
+    /**
+     * Test de la bascule du statut d'une tâche qui n'existe pas.
+     */
     public function testToggleTaskInvalidNonExistentTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -338,6 +387,9 @@ class TaskControllerTest extends WebTestCase
 
 /***************** TEST FONCTION DELETE() *******************/
 
+/**
+ * Test de l'impossibilité de supprimer une tâche en étant pas connecté.
+ */
     public function testDeleteTaskFailDisplayNotConnected(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -355,6 +407,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous devez être connecté pour supprimer une tâche.');
     }
 
+    /**
+     * Test de l'impossibilité de supprimer une tâche en étant connecté mais pas l'auteur de la tâche.
+     */
     public function testDeleteTaskFailDisplayNotOwner(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -377,11 +432,14 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la supprimer');
     }
 
+    /**
+     * Test de la suppression d'une tâche valide en étant connecté et l'auteur de la tâche.
+     */
     public function testDeleteTaskValid(): void
-    {   
+    {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
-        $email='admin@todolist.com';
+        $email = 'admin@todolist.com';
         $title = 'Test Titre';
         //on récupère le client connecté
         $this->createAuthenticatedClient($client, $email);

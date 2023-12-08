@@ -14,6 +14,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
+
+    /**
+     * Fonction qui gère l'affichage de la page de liste des users.
+     *
+     * @param  mixed $userRepository Le repository des users.
+     * @return Response La réponse HTTP.
+     */
     #[Route('/users', name: 'user_list')]
     public function indexList(UserRepository $userRepository): Response
     {
@@ -25,6 +32,14 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     *Fonction qui gère la création d'un user.
+     *
+     * @param Request $request la requête http.
+     * @param UserPasswordHasherInterface $userPasswordHasher le service qui permet de hasher le mot de passe.
+     * @param EntityManagerInterface $entityManager le manager de Doctrine.
+     * @return Response la réponse HTTP.
+     */
     #[Route('/users/create', name: 'user_create')]
     public function create(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
@@ -56,6 +71,16 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Fonction qui permet d'éditer un user en fonction de son id.
+     *
+     * @param User $user L'utilisateur à éditer.
+     * @param Request $request La requête HTTP.
+     * @param EntityManagerInterface $entityManager Le manager de Doctrine.
+     * @param UserPasswordHasherInterface $userPasswordHasher le service qui permet de hasher le mot de passe.
+     *
+     * @return Response // La réponse HTTP.
+     */
     #[Route('/users/{id}/edit', name: 'user_edit')]
     public function edit(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
