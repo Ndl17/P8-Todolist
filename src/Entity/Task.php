@@ -17,7 +17,7 @@ class Task
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length : 255)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]

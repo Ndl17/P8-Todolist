@@ -5,14 +5,14 @@ namespace App\DataFixtures;
 use App\Entity\Task;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class TaskFixtures extends Fixture implements OrderedFixtureInterface
 {
 
-    public function getOrder()
+    public function getOrder(): int
     {
         return 2;
     }

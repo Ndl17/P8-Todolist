@@ -8,7 +8,6 @@ use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,16 +20,16 @@ class TaskController extends AbstractController
      * @param  mixed $taskRepository Le repository des tâches.
      * @return Response La réponse HTTP.
      */
-    #[Route('/tasks', name: 'task_list')]    
+    #[Route('/tasks', name: 'task_list')]
     public function index(TaskRepository $taskRepository): Response
     {
         //récupère toutes les tâches grâce à la méthode  findby() avec un tri par ordre décroissant
-        $tasks = $taskRepository->findBy([], ['id' => 'DESC'] );
+        $tasks = $taskRepository->findBy([], ['id' => 'DESC']);
         //retourne la vue list.html.twig en lui passant en paramètre le tableau de tâches
         return $this->render('task/index.html.twig', ['tasks' => $tasks]);
     }
 
-     /**
+    /**
      * Fonction pour créer une tâche.
      *
      * @param  mixed $entityManager Le manager de Doctrine.
@@ -38,7 +37,7 @@ class TaskController extends AbstractController
      * @param  mixed $security Le service Security pour récupérer l'utilisateur connecté.
      * @return Response La réponse HTTP.
      */
-    #[Route('/tasks/create', name: 'task_create')]    
+    #[Route('/tasks/create', name: 'task_create')]
     public function create(EntityManagerInterface $entityManager, Request $request, Security $security): Response
     {
         //avec security on récupère l'utilisateur connecté
@@ -83,7 +82,7 @@ class TaskController extends AbstractController
      * @return Response la réponse HTTP.
      */
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, Security $security):Response
+    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
@@ -134,8 +133,8 @@ class TaskController extends AbstractController
      * @param  mixed $security le service Security pour récupérer l'utilisateur connecté
      * @return Response la réponse HTTP
      */
-    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]    
-    public function toggleTask(Task $task, EntityManagerInterface $entityManager, Security $security):Response
+    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
+    public function toggleTask(Task $task, EntityManagerInterface $entityManager, Security $security): Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
@@ -150,7 +149,7 @@ class TaskController extends AbstractController
         if (in_array('ROLE_ADMIN', $user->getRoles()) || $user == $task->getUser()) {
             //on inverse la valeur de la propriété isDone
             $task->setIsDone(!$task->isIsDone());
-            
+
             //on persiste la tâche et on la flush
             $entityManager->persist($task);
             $entityManager->flush();
@@ -178,7 +177,7 @@ class TaskController extends AbstractController
      * @return Response la réponse HTTP
      */
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function delete(Task $task, EntityManagerInterface $entityManager, Security $security):Response
+    public function delete(Task $task, EntityManagerInterface $entityManager, Security $security): Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
