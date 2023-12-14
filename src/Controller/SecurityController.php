@@ -11,7 +11,7 @@ class SecurityController extends AbstractController
 {
     /**
      *Fonction qui gère la connexion
-     
+     *
      * @param  mixed $authenticationUtils
      * @return Response
      */
