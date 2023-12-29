@@ -10,6 +10,9 @@ use TypeError;
 class TaskTest extends KernelTestCase
 {
 
+    /**
+     * Crée une entité Task.
+     */
     public function getEntity(): Task
     {
         //retourne une task avec des valeurs par défaut
@@ -19,6 +22,12 @@ class TaskTest extends KernelTestCase
             ->setCreatedAt(new \DateTimeImmutable())
             ->setIsDone(false);
     }
+
+    /**
+     * Teste si l'entité Task est valide.
+     * On s'attend à ce qu'aucune erreur ne soit retournée par le validateur.
+     * 
+     */
     public function testEntityIsValid()
     {
         self::bootKernel();
@@ -34,11 +43,16 @@ class TaskTest extends KernelTestCase
 
     }
 
+    /**
+     * Teste si l'entité Task est invalide. 
+     * On s'attend à ce que le validateur retourne 3 erreurs.
+     * on teste les propriétés non nullables
+     */
     public function testEntityEmptyNotNullableProperty()
     {
         $this->expectException(TypeError::class);
 
-        self::bootKernel();
+       // self::bootKernel();
         $container = static::getContainer();
         $task = $this->getEntity();
         $task->setTitle(null);
@@ -49,6 +63,11 @@ class TaskTest extends KernelTestCase
         $this->assertCount(3, $errors);
     }
 
+    /**
+     * Teste si l'entité Task est invalide. 
+     * On s'attend à ce que le validateur retourne 0 erreur.
+     * on teste la propriété nullable
+     */
     public function testEntityEmptyNullableProperty()
     {
         self::bootKernel();
@@ -59,33 +78,37 @@ class TaskTest extends KernelTestCase
         $this->assertCount(0, $errors);
     }
 
-    public function testGetSetTitle()
+    /**
+     * On teste les getter de l'entité Task.
+     */
+
+    public function testGetTitle()
     {
         $task = $this->getEntity();
         $this->assertSame('Titre de la tâche', $task->getTitle());
     }
 
-    public function testGetSetContent()
+    public function testGetContent()
     {
         $task = $this->getEntity();
         $this->assertSame('Contenu de la tâche', $task->getContent());
     }
 
-    public function testGetSetIsDone()
+    public function testGetIsDone()
     {
         $task = $this->getEntity();
         $this->assertSame(false, $task->isIsDone());
     }
 
-    public function testGetSetCreatedAt()
+    public function testGetCreatedAt()
     {
         $task = $this->getEntity();
-        $date = new \DateTimeImmutable(); // Créez une seule instance ici
-        $task->setCreatedAt($date); // Utilisez cette instance pour le setter
-        $this->assertSame($date, $task->getCreatedAt()); // Et
+        $date = new \DateTimeImmutable(); 
+        $task->setCreatedAt($date); 
+        $this->assertSame($date, $task->getCreatedAt()); 
     }
 
-    public function testGetSetUser()
+    public function testSetUser()
     {
         $task = $this->getEntity();
         $user = new User();

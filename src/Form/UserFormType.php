@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class userFormType extends AbstractType
+class UserFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -103,7 +103,7 @@ class userFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'block_name' => 'userFormType',
+            'block_name' => 'UserFormType',
 
         ]);
     }

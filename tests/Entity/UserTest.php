@@ -10,6 +10,9 @@ use TypeError;
 class UserTest extends KernelTestCase
 {
    
+    /**
+     * Crée une entité User.
+     */
     public function getEntity(): User
     {
         return (new User())
@@ -19,7 +22,11 @@ class UserTest extends KernelTestCase
             ->setRoles(['ROLE_USER']);
     }
 
-
+/**
+     * Teste si l'entité User est valide.
+     * On s'attend à ce qu'aucune erreur ne soit retournée par le validateur.
+     * 
+     */
     public function testEntityIsValid()
     {
         self::bootKernel();
@@ -31,9 +38,15 @@ class UserTest extends KernelTestCase
 
     }
 
+    /**
+     * Teste si l'entité User est invalide. 
+     * On s'attend à ce que le validateur retourne 4 erreurs.
+     * on teste les propriétés non nullables
+     */
     public function testEntityIsInvalid()
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
+        self::bootKernel();
         $user = new User();
         $user->setEmail(null);
         $user->setPassword(null);
@@ -43,25 +56,28 @@ class UserTest extends KernelTestCase
         $this->assertCount(4, $errors);
     }
 
-    public function testGetSetEmail()
+    /**
+     * On test les getter de l'entité User
+     */
+    public function testGetEmail()
     {
         $user = $this->getEntity();
         $this->assertSame('test@example.com', $user->getEmail());
     }
 
-    public function testGetSetPassword()
+    public function testGetPassword()
     {
         $user = $this->getEntity();
         $this->assertSame('password', $user->getPassword());
     }
 
-    public function testGetSetUsername()
+    public function testGetUsername()
     {
         $user = $this->getEntity();
         $this->assertSame('username', $user->getUsername());
     }
 
-    public function testGetSetRoles()
+    public function testGetRoles()
     {
         $user = $this->getEntity();
         $user->setRoles(['ROLE_ADMIN']);
@@ -71,18 +87,23 @@ class UserTest extends KernelTestCase
     }
     public function testGetTasks()
     {
+        // ici on crée un nouvel utilisateur et deux nouvelles tâches
         $user = new User();
-        $task1 = new Task(); // Assume Task is another entity that you've defined
+        $task1 = new Task(); 
         $task2 = new Task();
     
+        // on ajoute les tâches à l'utilisateur
         $user->addTask($task1);
         $user->addTask($task2);
-    
+        
+        // on récupère les tâches de l'utilisateur
         $tasks = $user->getTasks();
-    
-        $this->assertCount(2, $tasks); // Check if two tasks are returned
-        $this->assertTrue($tasks->contains($task1)); // Check if first task is in the collection
-        $this->assertTrue($tasks->contains($task2)); // Check if second task is in the collection
+        
+        // on vérifie que le tableau contient bien deux tâches
+        $this->assertCount(2, $tasks); 
+        // on vérifie que les deux tasks sont bien contenu dans le tableau
+        $this->assertTrue($tasks->contains($task1));
+        $this->assertTrue($tasks->contains($task2)); 
     }
     
     public function testAddTask()
@@ -92,9 +113,9 @@ class UserTest extends KernelTestCase
     
         $user->addTask($task);
     
-        $this->assertCount(1, $user->getTasks()); // Check if the task count is 1
-        $this->assertTrue($user->getTasks()->contains($task)); // Check if the task is added
-        $this->assertSame($user, $task->getUser()); // Optionally check if the task's user is set correctly
+        $this->assertCount(1, $user->getTasks()); 
+        $this->assertTrue($user->getTasks()->contains($task));
+        $this->assertSame($user, $task->getUser()); 
     }
 
     public function testRemoveTask()

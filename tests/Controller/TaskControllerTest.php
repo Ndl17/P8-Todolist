@@ -12,22 +12,28 @@ class TaskControllerTest extends WebTestCase
     use TestClientUtilitiesTrait;
 
 /***************** TEST FONCTION INDEX() *******************/
+    /**
+     * Test de l'affichage de la page qui liste les tâches.
+     */
     public function testIndexTaskDisplayPage(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
         // on demande au client de requêter une URL
-        $client->request('GET', '/task');
+        $client->request('GET', '/tasks');
         //on test que la requete renvoie un code 200
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
     }
 
+    /**
+     * Test de l'affichage de la page et que la page contient bien des tâches.
+     */
     public function testIndexHasTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
-        $crawler = $client->request('GET', '/task');
+        $crawler = $client->request('GET', '/tasks');
         //on compte le nombre de tâches affichées
         $taskCount = $crawler->filter('.card-task')->count();
         //On test que la page affiche au moins 15 tâches
@@ -35,23 +41,28 @@ class TaskControllerTest extends WebTestCase
     }
 
 /***************** TEST FONCTION CREATE() *******************/
-
+    /**
+     * Test de l'affichage de la page qui permet de créer une tâche.
+     */
     public function testCreateTaskDisplayPage(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
-        $client->request('GET', '/task/create');
+        $client->request('GET', '/tasks/create');
         //on test que la requete renvoie un code 200
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         //on test que le formulaire contient bien le bouton ajouter
         $this->assertSelectorTextContains('button', 'Ajouter');
     }
 
+    /**
+     * Test de la création d'une tâche valide.
+     */
     public function testCreateValidTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
-        $crawler = $client->request('GET', '/task/create');
+        $crawler = $client->request('GET', '/tasks/create');
         //on remplit le formulaire
         $form = $crawler->selectButton('Ajouter')->form([
             'task_form[title]' => 'Test Titre',
@@ -60,7 +71,7 @@ class TaskControllerTest extends WebTestCase
         //on soumet le formulaire
         $client->submit($form);
         //on test que la requete renvoie un code 302
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         //on suit la redirection
         $client->followRedirect();
         //on test que la requete renvoie un code 200
@@ -69,12 +80,15 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-success', 'La tâche a été bien été ajoutée.');
     }
 
+    /**
+     * Test de la création d'une tâche invalide.
+     */
     public function testCreateInvalidTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
         //on affiche la page qui permet de créer une tâche
-        $crawler = $client->request('GET', '/task/create');
+        $crawler = $client->request('GET', '/tasks/create');
         //on remplit le formulaire
 
         $form = $crawler->selectButton('Ajouter')->form([
@@ -90,6 +104,11 @@ class TaskControllerTest extends WebTestCase
     }
 
 /***************** TEST FONCTION EDIT() *******************/
+    /**
+     * Test de l'affichage de la page qui permet d'éditer une tâche en étant connecté et l'auteur de la tâche.
+     * On cherche aussi à retrouver le titre de la tâche dans les éléments h5 pour accéder à la modification.
+     * On test aussi que le formulaire contient bien le bouton modifier.
+     */
     public function testEditTaskDisplayPage(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -101,7 +120,7 @@ class TaskControllerTest extends WebTestCase
         //on récupère la tâche de l'utilisateur connecté
         $getTask = $this->getTaskByUserId($client, $email);
         //on affiche la page qui liste les tâches
-        $client->request('GET', '/task');
+        $client->request('GET', '/tasks');
         //on recherche l'esemble des éléments h5
         $h5Titles = $client->getCrawler()->filter('h5.card-title');
         //on récupère le titre de la tâche créé par le user
@@ -126,6 +145,9 @@ class TaskControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test du non affichage de la page qui permet d'éditer une tâche en étant pas connecté.
+     */
     public function testEditTaskFailDisplayNotConnected(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -137,12 +159,15 @@ class TaskControllerTest extends WebTestCase
         $client->request('GET', '/tasks/' . $getTask->getId() . '/edit');
 
         //on test la redirection vers la page des tâches
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on test que le message d'erreur est bien affiché
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous devez être connecté pour modifier une tâche.');
     }
 
+    /**
+     * Test du non affichage de la page qui permet d'éditer une tâche en étant connecté mais pas l'auteur de la tâche.
+     */
     public function testEditTaskFailDisplayNotOwner(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -157,12 +182,15 @@ class TaskControllerTest extends WebTestCase
         //on va sur la page d'édition de la tâche avec une tache dont le user n'est pas l'auteur
         $client->request('GET', '/tasks/' . $getTask->getId() . '/edit');
         //on test la redirection vers la page des tâches
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on test que le message d'erreur est bien affiché
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la modifier');
     }
 
+    /**
+     * Test de l'édition d'une tâche valide.
+     */
     public function testEditTaskValid(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -183,7 +211,7 @@ class TaskControllerTest extends WebTestCase
         //on soumet le formulaire
         $client->submit($form);
         //on test que la requete renvoie un code 302
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         //on suit la redirection
         $client->followRedirect();
         //on test que la requete renvoie un code 200
@@ -192,6 +220,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-success', 'Superbe ! La tâche a bien été modifiée.');
     }
 
+    /**
+     * Test de l'édition d'une tâche invalide.
+     */
     public function testEditTaskInvalid(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -219,6 +250,9 @@ class TaskControllerTest extends WebTestCase
 
 /***************** TEST FONCTION TOGGLE() *******************/
 
+    /**
+     * Test de l'impossibilité de basculer le statut d'une tâche en étant pas connecté.
+     */
     public function testToggleTaskFailDisplayNotConnected(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -229,12 +263,15 @@ class TaskControllerTest extends WebTestCase
         //on va sur la page qui permet de basculer le statut de la tâche sans être connecté
         $client->request('GET', '/tasks/' . $getTask->getId() . '/toggle');
         //on test la redirection vers la page des tâches
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on test que le message d'erreur est bien affiché
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous devez être connecté pour modifier une tâche.');
     }
 
+    /**
+     * Test de l'impossibilité de basculer le statut d'une tâche en étant connecté mais pas l'auteur de la tâche.
+     */
     public function testToggleTaskFailDisplayNotOwner(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -250,12 +287,16 @@ class TaskControllerTest extends WebTestCase
         //on va sur la page qui permet de basculer le statut de la tâche en étant connecté mais sans être l'auteur de la tâche
         $client->request('GET', '/tasks/' . $getTask->getId() . '/toggle');
         //on test la redirection vers la page des tâches
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on test que le message d'erreur est bien affiché
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la modifier');
     }
 
+    /**
+     * Test de la possibilité de basculer le statut d'une tâche en étant connecté et l'auteur de la tâche.
+     * On test le changement de statut de la tâche et le message de succès.
+     */
     public function testToggleTaskValid(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -273,7 +314,7 @@ class TaskControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/tasks/' . $getTask->getId() . '/toggle');
 
         //on vérifie que la redirection est bien faite
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on récupère le statut de la tache après le changement (true/false)
         $afterIsDone = $getTask->isIsDone();
@@ -281,7 +322,7 @@ class TaskControllerTest extends WebTestCase
         //on verifie que le statut de la tache a bien changé
         $this->assertNotEquals($initialIsDone, $afterIsDone, 'Le statut de la tâche soit changer.');
 
-        //on vérifie que le message de succès est bien affiché  
+        //on vérifie que le message de succès est bien affiché
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         //en fonction du statut de la tâche on vérifie que le message de succès  correspondant est bien affiché
@@ -292,6 +333,11 @@ class TaskControllerTest extends WebTestCase
         }
     }
 
+    /**
+     * Test que la valeur du statut de la tâche est bien true ou false en fonction du statut initial.
+     * En étant connecté et l'auteur de la tâche.
+     * On test le changement de statut de la tâche et le message de succès.
+     */
     public function testToggleTaskValidValue(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -308,7 +354,7 @@ class TaskControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/tasks/' . $getTask->getId() . '/toggle');
 
         //on vérifie que la redirection est bien faite
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on récupère le statut de la tache après le changement (true/false)
         $afterIsDone = $getTask->isIsDone();
@@ -320,6 +366,9 @@ class TaskControllerTest extends WebTestCase
         }
     }
 
+    /**
+     * Test de la bascule du statut d'une tâche qui n'existe pas.
+     */
     public function testToggleTaskInvalidNonExistentTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -338,6 +387,9 @@ class TaskControllerTest extends WebTestCase
 
 /***************** TEST FONCTION DELETE() *******************/
 
+/**
+ * Test de l'impossibilité de supprimer une tâche en étant pas connecté.
+ */
     public function testDeleteTaskFailDisplayNotConnected(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -349,12 +401,15 @@ class TaskControllerTest extends WebTestCase
         $client->request('GET', '/tasks/' . $getTask->getId() . '/delete');
 
         //on test la redirection vers la page des tâches
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on test que le message d'erreur est bien affiché
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous devez être connecté pour supprimer une tâche.');
     }
 
+    /**
+     * Test de l'impossibilité de supprimer une tâche en étant connecté mais pas l'auteur de la tâche.
+     */
     public function testDeleteTaskFailDisplayNotOwner(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
@@ -371,17 +426,20 @@ class TaskControllerTest extends WebTestCase
         $client->request('GET', '/tasks/' . $getTask->getId() . '/delete');
 
         //on test la redirection vers la page des tâches
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on test que le message d'erreur est bien affiché
         $this->assertSelectorTextContains('.alert.alert-danger', 'Oops ! Vous n\'êtes pas l\'auteur de cette tâche. Vous ne pouvez pas la supprimer');
     }
 
+    /**
+     * Test de la suppression d'une tâche valide en étant connecté et l'auteur de la tâche.
+     */
     public function testDeleteTaskValid(): void
-    {   
+    {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
-        $email='admin@todolist.com';
+        $email = 'admin@todolist.com';
         $title = 'Test Titre';
         //on récupère le client connecté
         $this->createAuthenticatedClient($client, $email);
@@ -391,7 +449,7 @@ class TaskControllerTest extends WebTestCase
         $client->request('GET', '/tasks/' . $getTask->getId() . '/delete');
 
         //on test la redirection vers la page des tâches
-        $this->assertResponseRedirects('/task');
+        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         //on test que le message de succès est bien affiché
         $this->assertSelectorTextContains('.alert.alert-success', 'Superbe ! La tâche a bien été supprimée.');

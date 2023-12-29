@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SecurityControllerTest extends WebTestCase
 {
+    /**
+     * Test de l'affichage de la page de connexion.
+     */
     public function testDisplayLogin(): void
     {
         $client = static::createClient();
@@ -18,6 +21,9 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorNotExists('.alert.alert-danger');
     }
 
+    /**
+     * Test de la connexion avec des mauvaises informations.
+     */
     public function testLoginWithBadCredentials()
     {
         $client = static::createClient();
@@ -33,6 +39,9 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-danger');
     }
 
+    /**
+     * Test de la connexion avec des bonnes informations.
+     */
     public function testSucessfulLogin()
     {
         $client = static::createClient();
@@ -49,6 +58,9 @@ class SecurityControllerTest extends WebTestCase
 
     }
 
+    /**
+     * Test de la déconnexion.
+     */
     public function testLogout()
     {
         $client = static::createClient();
@@ -64,7 +76,5 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
     }
-
-
 
 }

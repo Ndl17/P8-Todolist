@@ -4,17 +4,17 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture implements OrderedFixtureInterface
 {
 
     private $userPasswordHasher;
 
-    public function getOrder()
+    public function getOrder(): int
     {
         return 1;
     }
@@ -23,25 +23,24 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
         $this->userPasswordHasher = $userPasswordHasher;
     }
 
-    
     public function load(ObjectManager $manager): void
     {
 
         //création de 10 utilisateurs avec role user
-        $faker = Factory::create(); 
+        $faker = Factory::create();
         for ($i = 0; $i < 10; $i++) {
-        $defaultUser= new User();
-        $defaultUser->setEmail($faker->email);
-        $defaultUser->setRoles(['ROLE_USER']);
-        $defaultUser->setUsername($faker->username);
-        $defaultUser->setPassword($this->userPasswordHasher->hashPassword($defaultUser, 'password'));
-        $manager->persist($defaultUser);
-        $this->addReference('user_' . $i, $defaultUser);
-        $manager->flush();
+            $defaultUser = new User();
+            $defaultUser->setEmail($faker->email);
+            $defaultUser->setRoles(['ROLE_USER']);
+            $defaultUser->setUsername($faker->username);
+            $defaultUser->setPassword($this->userPasswordHasher->hashPassword($defaultUser, 'password'));
+            $manager->persist($defaultUser);
+            $this->addReference('user_' . $i, $defaultUser);
+            $manager->flush();
         }
-        
+
         //création d'un utilisateur avec role admin
-        $adminUser= new User();
+        $adminUser = new User();
         $adminUser->setEmail('admin@todolist.com');
         $adminUser->setRoles(['ROLE_ADMIN']);
         $adminUser->setUsername('Admin');
@@ -49,7 +48,7 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
         $manager->persist($adminUser);
         $manager->flush();
 
-        $userTest= new User();
+        $userTest = new User();
         $userTest->setEmail('user@user.fr');
         $userTest->setRoles(['ROLE_USER']);
         $userTest->setUsername('UserTest1');
@@ -58,7 +57,7 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
         $this->addReference('user_test', $userTest);
         $manager->flush();
 
-        $userTestBis= new User();
+        $userTestBis = new User();
         $userTestBis->setEmail('userbis@user.fr');
         $userTestBis->setRoles(['ROLE_USER']);
         $userTestBis->setUsername('UserTest2');
@@ -66,7 +65,6 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
         $manager->persist($userTestBis);
         $this->addReference('user_test_bis', $userTestBis);
         $manager->flush();
-
 
     }
 }

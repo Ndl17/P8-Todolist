@@ -14,17 +14,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route('/task', name: 'task_list')]
+    /**
+     * Affiche la liste des tâches.
+     *
+     * @param  mixed $taskRepository Le repository des tâches.
+     * @return Response La réponse HTTP.
+     */
+    #[Route('/tasks', name: 'task_list')]
     public function index(TaskRepository $taskRepository): Response
     {
         //récupère toutes les tâches grâce à la méthode  findby() avec un tri par ordre décroissant
-        $tasks = $taskRepository->findBy([], ['id' => 'DESC'] );
+        $tasks = $taskRepository->findBy([], ['id' => 'DESC']);
         //retourne la vue list.html.twig en lui passant en paramètre le tableau de tâches
         return $this->render('task/index.html.twig', ['tasks' => $tasks]);
     }
 
-    #[Route('/task/create', name: 'task_create')]
-    public function create(EntityManagerInterface $entityManager, Request $request, Security $security)
+    /**
+     * Fonction pour créer une tâche.
+     *
+     * @param  mixed $entityManager Le manager de Doctrine.
+     * @param  mixed $request La requête HTTP.
+     * @param  mixed $security Le service Security pour récupérer l'utilisateur connecté.
+     * @return Response La réponse HTTP.
+     */
+    #[Route('/tasks/create', name: 'task_create')]
+    public function create(EntityManagerInterface $entityManager, Request $request, Security $security): Response
     {
         //avec security on récupère l'utilisateur connecté
         $currentUser = $security->getUser();
@@ -58,8 +72,17 @@ class TaskController extends AbstractController
         return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
+    /**
+     *Cette fonction permet d'éditer une tâche en fonction de son id.
+     *
+     * @param Task $task La tâche à éditer.
+     * @param Request $request la requête HTTP.
+     * @param EntityManagerInterface $entityManager le manager de Doctrine.
+     * @param Security $security le service Security pour récupérer l'utilisateur connecté.
+     * @return Response la réponse HTTP.
+     */
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, Security $security)
+    public function edit(Task $task, Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
@@ -102,8 +125,16 @@ class TaskController extends AbstractController
         ]);
     }
 
+    /**
+     * Fonction qui permet de setter la propriété isDone à true ou false d'une tâche en fonction de son id
+     *
+     * @param  mixed $task tache dont on veut modifier la propriété isDone
+     * @param  mixed $entityManager le manager de Doctrine
+     * @param  mixed $security le service Security pour récupérer l'utilisateur connecté
+     * @return Response la réponse HTTP
+     */
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTask(Task $task, EntityManagerInterface $entityManager, Security $security)
+    public function toggleTask(Task $task, EntityManagerInterface $entityManager, Security $security): Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
@@ -118,7 +149,7 @@ class TaskController extends AbstractController
         if (in_array('ROLE_ADMIN', $user->getRoles()) || $user == $task->getUser()) {
             //on inverse la valeur de la propriété isDone
             $task->setIsDone(!$task->isIsDone());
-            
+
             //on persiste la tâche et on la flush
             $entityManager->persist($task);
             $entityManager->flush();
@@ -137,8 +168,16 @@ class TaskController extends AbstractController
         }
     }
 
+    /**
+     * Fonction qui permet de supprimer une tâche en fonction de son id
+     *
+     * @param  mixed $task tache à supprimer
+     * @param  mixed $entityManager le manager de Doctrine
+     * @param  mixed $security le service Security pour récupérer l'utilisateur connecté
+     * @return Response la réponse HTTP
+     */
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function delete(Task $task, EntityManagerInterface $entityManager, Security $security)
+    public function delete(Task $task, EntityManagerInterface $entityManager, Security $security): Response
     {
         //on récupère l'utilisateur connecté
         $user = $security->getUser();
