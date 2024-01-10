@@ -7,7 +7,7 @@ Ce document sert de guide pour tous les développeurs travaillant sur le projet.
 * Etape 1 : Réaliser un fork du répertoire Github du projet
 * Etape 2 : Cloner localement de votre fork : git clone https://github.com/Pseudo/nomdemonrepo.git
 * Etape 3 :	Installer le projet et ses dépendances (Consulter le readme du projet)
-* Etape 4 : Créer une branche : git checkout -b nouvelle-branch
+* Etape 4 : Créer une nouvelle branche 
 * Etape 5 : Penser à commit chacune de vos modifications
 * Etape 6 : Executez tous vos tests
 * Etape 7 : Push la branch sur votre fork
