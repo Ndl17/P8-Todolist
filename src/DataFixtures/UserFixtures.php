@@ -48,6 +48,17 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
         $manager->persist($adminUser);
         $manager->flush();
 
+        //création d'un utilisateur anonyme
+        $anonymousUser = new User();
+        $anonymousUser->setEmail('anonyme@todolist.com');
+        $anonymousUser->setRoles(['ROLE_USER']);
+        $anonymousUser->setUsername('Anonymous');
+        $anonymousUser->setPassword($this->userPasswordHasher->hashPassword($anonymousUser, 'password'));
+        $manager->persist($anonymousUser);
+        $this->addReference('user_anonymous', $anonymousUser);
+        $manager->flush();
+
+        //création d'un utilisateur avec role user
         $userTest = new User();
         $userTest->setEmail('user@user.fr');
         $userTest->setRoles(['ROLE_USER']);

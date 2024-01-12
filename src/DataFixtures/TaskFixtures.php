@@ -34,12 +34,14 @@ class TaskFixtures extends Fixture implements OrderedFixtureInterface
         }
 
         //création tache sans user assigné
+        $anonymousUser = $this->getReference('user_anonymous');
         for ($i = 0; $i < 5; $i++) {
             $task = new Task();
             $task->setCreatedAt(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $faker->date('Y-m-d H:i:s')));
             $task->setTitle($faker->sentence);
             $task->setContent($faker->realText());
             $task->setIsDone($faker->boolean);
+            $task->setUser($anonymousUser);
             $manager->persist($task);
             $manager->flush();
         }
