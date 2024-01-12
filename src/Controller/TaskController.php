@@ -42,7 +42,14 @@ class TaskController extends AbstractController
     {
         //avec security on récupère l'utilisateur connecté
         $currentUser = $security->getUser();
-        //création d'une nouvelle tâche
+        
+        //si l'utilisateur n'est pas connecté on le redirige vers la liste des tâches
+        if (!$currentUser) {
+            $this->addFlash('danger', 'Vous devez être connecté pour modifier une tâche.');
+            return $this->redirectToRoute('task_list');
+        }
+
+        //on crée une nouvelle tâche
         $task = new Task();
         //on attribue l'utilisateur connecté à la tâche
         $task->setUser($currentUser);
