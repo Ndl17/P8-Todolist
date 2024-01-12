@@ -17,16 +17,17 @@ class Task
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(length : 255)]
+    #[ORM\Column(length: 255)]
     private ?string $title = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $content = null;
 
     #[ORM\Column]
     private ?bool $isDone = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $content = null;
+
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     public function getId(): ?int
