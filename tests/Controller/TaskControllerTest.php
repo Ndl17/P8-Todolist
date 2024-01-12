@@ -48,6 +48,10 @@ class TaskControllerTest extends WebTestCase
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
+        //on se connecte en tant que user
+        $email = 'user@user.fr';
+        //on récupère le client connecté
+        $this->createAuthenticatedClient($client, $email);
         $client->request('GET', '/tasks/create');
         //on test que la requete renvoie un code 200
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -56,12 +60,30 @@ class TaskControllerTest extends WebTestCase
     }
 
     /**
+     * Test de la redirection vers la page de connexion si on essaye d'accéder à la page qui permet de créer une tâche sans être connecté.a
+     *
+     */
+    public function testCreateTaskFailDisplayNotConnected(): void
+    {
+        // on crée un client qui va nous permettre de faire des requêtes HTTP
+        $client = static::createClient();
+        $client->request('GET', '/tasks/create');
+        //vu que pas connecté retour page login
+        $this->assertResponseRedirects('/tasks');
+    }
+
+    
+    /**
      * Test de la création d'une tâche valide.
      */
     public function testCreateValidTask(): void
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
+        //on se connecte en tant que user
+        $email = 'user@user.fr';
+        //on récupère le client connecté
+        $this->createAuthenticatedClient($client, $email);
         $crawler = $client->request('GET', '/tasks/create');
         //on remplit le formulaire
         $form = $crawler->selectButton('Ajouter')->form([
@@ -87,6 +109,12 @@ class TaskControllerTest extends WebTestCase
     {
         // on crée un client qui va nous permettre de faire des requêtes HTTP
         $client = static::createClient();
+
+        //on se connecte en tant que user
+        $email = 'user@user.fr';
+        //on récupère le client connecté
+        $this->createAuthenticatedClient($client, $email);
+
         //on affiche la page qui permet de créer une tâche
         $crawler = $client->request('GET', '/tasks/create');
         //on remplit le formulaire
