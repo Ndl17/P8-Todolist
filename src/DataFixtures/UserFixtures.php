@@ -52,7 +52,7 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
         $anonymousUser = new User();
         $anonymousUser->setEmail('anonyme@todolist.com');
         $anonymousUser->setRoles(['ROLE_USER']);
-        $anonymousUser->setUsername('Anonymous');
+        $anonymousUser->setUsername('Anonyme');
         $anonymousUser->setPassword($this->userPasswordHasher->hashPassword($anonymousUser, 'password'));
         $manager->persist($anonymousUser);
         $this->addReference('user_anonymous', $anonymousUser);

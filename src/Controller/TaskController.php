@@ -45,7 +45,7 @@ class TaskController extends AbstractController
         
         //si l'utilisateur n'est pas connecté on le redirige vers la liste des tâches
         if (!$currentUser) {
-            $this->addFlash('danger', 'Vous devez être connecté pour modifier une tâche.');
+            $this->addFlash('danger', 'Vous devez être connecté pour créer une tâche.');
             return $this->redirectToRoute('task_list');
         }
 

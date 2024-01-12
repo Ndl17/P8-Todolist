@@ -33,7 +33,7 @@ class TaskFixtures extends Fixture implements OrderedFixtureInterface
             $manager->flush();
         }
 
-        //création tache sans user assigné
+        //on relie les tâche non assigné à l'utilisateur anonyme
         $anonymousUser = $this->getReference('user_anonymous');
         for ($i = 0; $i < 5; $i++) {
             $task = new Task();
